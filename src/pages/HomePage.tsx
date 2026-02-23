@@ -18,7 +18,7 @@ const fade = {
 };
 
 const fadeInScale = {
-  hidden: { opacity: 0, y: 18, scale: 0.98 },
+  hidden: { opacity: 0, y: 18, scale: 0.985 },
   show: {
     opacity: 1,
     y: 0,
@@ -69,7 +69,7 @@ function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
 
     let raf = 0;
     const start = performance.now();
-    const duration = 900; // ms
+    const duration = 900;
 
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / duration);
@@ -98,8 +98,6 @@ export default function HomePage() {
   const [projects, setProjects] = useState<ProjectRow[]>([]);
   const [skills, setSkills] = useState<SkillGroupRow[]>([]);
   const [projectCount, setProjectCount] = useState<number>(0);
-
-  // Optional: track errors (don’t silently fail like a newbie app)
   const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -119,10 +117,7 @@ export default function HomePage() {
               .eq("is_featured", true)
               .order("created_at", { ascending: false })
               .limit(3),
-            supabase
-              .from("projects")
-              .select("id", { count: "exact", head: true })
-              .eq("is_published", true),
+            supabase.from("projects").select("id", { count: "exact", head: true }).eq("is_published", true),
             supabase.from("skills").select("*").order("order_index"),
           ]);
 
@@ -166,28 +161,26 @@ export default function HomePage() {
   const heroTitle = settings?.title || "Full-Stack Developer";
   const heroStatus = settings?.availability_status || "Available for work";
   const heroText =
-    settings?.hero_text ||
-    settings?.summary ||
-    "Building production software that solves real problems.";
+    settings?.hero_text || settings?.summary || "Building production software that solves real problems.";
 
   return (
     <>
       {/* ─── HERO ─── */}
-      <section className="relative">
+      <section className="relative overflow-x-clip">
         {/* soft background glow */}
         <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
-          <div className="absolute top-40 right-[-6rem] h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+          <div className="absolute -top-24 left-1/2 h-56 w-56 sm:h-72 sm:w-72 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
+          <div className="absolute top-56 sm:top-40 right-[-8rem] sm:right-[-6rem] h-64 w-64 sm:h-80 sm:w-80 rounded-full bg-primary/10 blur-3xl" />
         </div>
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 lg:pt-20 pb-10 sm:pb-16">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 lg:pt-20 pb-10 sm:pb-14 lg:pb-16">
+          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
             {/* Left: Text */}
-            <div className="max-w-2xl p-3 sm:p-6 rounded-lg">
+            <div className="min-w-0 max-w-2xl">
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
-                <span className="inline-flex items-center gap-2 text-xs sm:text-sm text-muted-foreground mb-6 sm:mb-8">
-                  <span className="w-2 h-2 rounded-full bg-primary" />
-                  {heroStatus}
+                <span className="inline-flex items-center gap-2 text-xs sm:text-sm text-muted-foreground mb-5 sm:mb-7">
+                  <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
+                  <span className="truncate">{heroStatus}</span>
                 </span>
               </motion.div>
 
@@ -195,7 +188,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.05 }}
-                className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.05] mb-5"
+                className="text-balance text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.06] sm:leading-[1.05] mb-4"
               >
                 {heroName}
               </motion.h1>
@@ -204,7 +197,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed mb-3 max-w-xl"
+                className="text-pretty text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed mb-3 max-w-prose"
               >
                 {heroTitle}
               </motion.p>
@@ -213,7 +206,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.15 }}
-                className="text-sm sm:text-base text-muted-foreground/80 leading-relaxed mb-8 sm:mb-10 max-w-xl"
+                className="text-pretty text-sm sm:text-base text-muted-foreground/80 leading-relaxed mb-8 sm:mb-10 max-w-prose"
               >
                 {heroText}
               </motion.p>
@@ -248,14 +241,15 @@ export default function HomePage() {
             </div>
 
             {/* Right: Hero image */}
-            <motion.div initial="hidden" animate="show" variants={fadeInScale} className="relative">
-              <div className="relative mx-auto top-8 w-full max-w-[260px] sm:max-w-[320px] md:max-w-[360px] lg:max-w-[420px]">
+            <motion.div initial="hidden" animate="show" variants={fadeInScale} className="relative min-w-0">
+              {/* This wrapper fixes “big gap / overflow” issues on small devices */}
+              <div className="mx-auto w-full max-w-[320px] sm:max-w-[360px] md:max-w-[380px] lg:max-w-[420px]">
                 {/* glow behind card */}
-                <div className="absolute -inset-4 sm:-inset-5 -z-10 rounded-3xl bg-gradient-to-tr from-primary/18 via-transparent to-transparent blur-2xl" />
+                <div className="absolute inset-x-0 -top-6 mx-auto h-32 w-72 sm:w-80 -z-10 rounded-3xl bg-gradient-to-tr from-primary/18 via-transparent to-transparent blur-2xl" />
 
-                <div className="relative aspect-[4/5] sm:aspect-square rounded-full overflow-hidden border border-border shadow-xl">
+                {/* responsive circle without layout shifts */}
+                <div className="relative mx-auto w-[220px] xs:w-[240px] sm:w-[280px] md:w-[320px] lg:w-[360px] aspect-square rounded-full overflow-hidden border border-border shadow-xl">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-transparent to-transparent z-10 pointer-events-none" />
-
                   <img
                     src="https://res.cloudinary.com/dpifyaq7d/image/upload/v1771349685/Mohd_Irfan_bnez9n.jpg"
                     alt="Portrait of Mohd Irfan"
@@ -265,11 +259,8 @@ export default function HomePage() {
                   />
                 </div>
 
-                {/* subtle caption / credibility */}
-                <div className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                  {/* <span className="h-1.5 w-1.5 rounded-full bg-primary/70" /> */}
-                  {/* Production-focused engineer */}
-                </div>
+                {/* optional credibility line (kept empty but won’t create spacing bugs) */}
+                <div className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground min-h-[1rem]" />
               </div>
             </motion.div>
           </div>
@@ -287,7 +278,7 @@ export default function HomePage() {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true }}
-                className="rounded-xl bg-card/40 border border-border/60 p-5 sm:p-6"
+                className="rounded-xl bg-card/40 border border-border/60 p-5 sm:p-6 min-w-0"
               >
                 <p className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
                   <Counter value={m.value} suffix={m.suffix} />
@@ -303,19 +294,15 @@ export default function HomePage() {
       {projects.length > 0 && (
         <section className="py-14 sm:py-16 lg:py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-end justify-between gap-6 mb-8 sm:mb-12">
-              <div>
-                <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-2">
-                  Selected Work
-                </p>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
-                  Featured Projects
-                </h2>
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:gap-6 mb-8 sm:mb-12">
+              <div className="min-w-0">
+                <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-2">Selected Work</p>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">Featured Projects</h2>
               </div>
 
               <Link
                 to="/projects"
-                className="hidden sm:flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40 rounded-md px-2 py-1"
+                className="hidden sm:flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40 rounded-md px-2 py-1 shrink-0"
               >
                 All projects <ArrowUpRight size={14} />
               </Link>
@@ -352,12 +339,8 @@ export default function HomePage() {
       <section className="py-14 sm:py-16 lg:py-20 bg-secondary/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-10 sm:mb-14">
-            <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-2">
-              Approach
-            </p>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4">
-              How I build software
-            </h2>
+            <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-2">Approach</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4">How I build software</h2>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
               A clear process from understanding the problem to shipping production-ready code with measurable results.
             </p>
@@ -387,7 +370,7 @@ export default function HomePage() {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true }}
-                className="bg-card border border-border rounded-2xl p-6 sm:p-8"
+                className="bg-card border border-border rounded-2xl p-6 sm:p-8 min-w-0"
               >
                 <span className="text-xs font-mono text-muted-foreground">{item.num}</span>
                 <h3 className="text-base sm:text-lg font-semibold mt-3 mb-3">{item.title}</h3>
@@ -404,9 +387,7 @@ export default function HomePage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mb-10 sm:mb-14">
               <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-2">Stack</p>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
-                Technologies I work with
-              </h2>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">Technologies I work with</h2>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-8">
@@ -417,15 +398,14 @@ export default function HomePage() {
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true }}
-                  className="bg-card/40 border border-border/60 rounded-2xl p-6"
+                  className="bg-card/40 border border-border/60 rounded-2xl p-6 min-w-0"
                 >
-                  <h3 className="text-sm font-medium text-foreground mb-4">{sg.group_name || "Skills"}</h3>
+                  <h3 className="text-sm font-medium text-foreground mb-4 truncate">
+                    {sg.group_name || "Skills"}
+                  </h3>
                   <div className="flex flex-wrap gap-2">
                     {(Array.isArray(sg.items) ? (sg.items as string[]) : []).map((s) => (
-                      <span
-                        key={s}
-                        className="text-xs px-3 py-1.5 rounded-md bg-secondary text-muted-foreground"
-                      >
+                      <span key={s} className="text-xs px-3 py-1.5 rounded-md bg-secondary text-muted-foreground">
                         {s}
                       </span>
                     ))}
@@ -445,9 +425,9 @@ export default function HomePage() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="bg-card border border-border rounded-2xl p-8 sm:p-10 md:p-14 flex flex-col md:flex-row md:items-center md:justify-between gap-8"
+            className="bg-card border border-border rounded-2xl p-7 sm:p-10 md:p-14 flex flex-col md:flex-row md:items-center md:justify-between gap-7 sm:gap-8"
           >
-            <div className="max-w-md">
+            <div className="min-w-0 max-w-md">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight mb-3">
                 Let&apos;s work together
               </h2>
