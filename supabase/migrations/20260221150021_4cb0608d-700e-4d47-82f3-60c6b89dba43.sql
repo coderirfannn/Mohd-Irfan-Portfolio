@@ -1,0 +1,1 @@
+UPDATE public.projects SET slug = TRIM(slug) WHERE slug != TRIM(slug);

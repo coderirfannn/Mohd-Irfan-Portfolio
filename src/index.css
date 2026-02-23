@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 99%;
+    --foreground: 240 10% 6%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 6%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 6%;
+    --primary: 165 60% 36%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 240 10% 6%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 8% 46%;
+    --accent: 220 14% 96%;
+    --accent-foreground: 240 10% 6%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 165 60% 36%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 165 60% 36%;
+  }
+
+  .dark {
+    --background: 220 16% 6%;
+    --foreground: 220 13% 91%;
+    --card: 220 16% 9%;
+    --card-foreground: 220 13% 91%;
+    --popover: 220 16% 9%;
+    --popover-foreground: 220 13% 91%;
+    --primary: 165 60% 40%;
+    --primary-foreground: 220 16% 6%;
+    --secondary: 220 14% 14%;
+    --secondary-foreground: 220 13% 91%;
+    --muted: 220 14% 14%;
+    --muted-foreground: 220 8% 54%;
+    --accent: 220 14% 14%;
+    --accent-foreground: 220 13% 91%;
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 14% 16%;
+    --input: 220 14% 16%;
+    --ring: 165 60% 40%;
+    --sidebar-background: 220 16% 6%;
+    --sidebar-foreground: 220 13% 91%;
+    --sidebar-primary: 165 60% 40%;
+    --sidebar-primary-foreground: 220 16% 6%;
+    --sidebar-accent: 220 14% 14%;
+    --sidebar-accent-foreground: 220 13% 91%;
+    --sidebar-border: 220 14% 16%;
+    --sidebar-ring: 165 60% 40%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  }
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer utilities {
+  .section-padding {
+    @apply py-20 md:py-28;
+  }
+  .section-padding-sm {
+    @apply py-12 md:py-16;
+  }
+}
